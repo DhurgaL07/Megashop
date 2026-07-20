@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MEGA MART — Shop</title>
+  <style>
+    /* ===== CARTOON BRUTALIST ===== */
+    @import url('https://fonts.googleapis.com/css2?family=Bungee&family=Public+Sans:wght@400;700;900&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --yellow: #d5e353;
+      --pink: #FF6B9D;
+      --cyan: #00D2FF;
+      --green: #4ADE80;
+      --red: #EF4444;
+      --purple: #A855F7;
+      --bg: #FFFDF7;
+      --black: #1A1A2E;
+    }
+
+    body {
+      font-family: 'Public Sans', sans-serif;
+      background: var(--bg);
+      color: var(--black);
+      min-height: 100vh;
+    }
+
+    /* ===== HEADER ===== */
+    header {
+      background: var(--yellow);
+      border-bottom: 4px solid var(--black);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      box-shadow: 0 4px 0 var(--black);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-family: 'Bungee', cursive;
+      font-size: 28px;
+      text-decoration: none;
+      color: var(--black);
+      text-shadow: 3px 3px 0 #fff;
+      letter-spacing: -1px;
+    }
+    .logo span { color: var(--pink); }
+
+    nav { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    nav a, nav button {
+      font-family: 'Bungee', cursive;
+      font-size: 14px;
+      padding: 8px 16px;
+      border: 3px solid var(--black);
+      background: #fff;
+      color: var(--black);
+      text-decoration: none;
+      cursor: pointer;
+      box-shadow: 3px 3px 0 var(--black);
+      transition: all 0.1s;
+      text-transform: uppercase;
+    }
+    nav a:hover, nav button:hover { transform: translate(1px, 1px); box-shadow: 2px 2px 0 var(--black); }
+    nav a:active, nav button:active { transform: translate(3px, 3px); box-shadow: none; }
+
+    .cart-badge {
+      background: var(--pink);
+      color: #fff;
+      border-radius: 50%;
+      padding: 2px 7px;
+      font-size: 12px;
+      margin-left: 4px;
+    }
+
+    #user-info { display: flex; align-items: center; gap: 8px; font-weight: 700; }
+
+    /* ===== MAIN ===== */
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    /* ===== PRODUCT GRID ===== */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .product-card {
+      background: #fff;
+      border: 4px solid var(--black);
+      box-shadow: 6px 6px 0 var(--black);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: transform 0.15s, box-shadow 0.15s;
+      cursor: pointer;
+    }
+    .product-card:hover { transform: translate(-2px, -2px); box-shadow: 10px 10px 0 var(--black); }
+
+    .product-emoji { font-size: 64px; text-align: center; line-height: 1; }
+
+    .product-name { font-family: 'Bungee', cursive; font-size: 18px; }
+    .product-category { font-size: 12px; text-transform: uppercase; font-weight: 900; color: var(--purple); letter-spacing: 1px; }
+    .product-price { font-family: 'Bungee', cursive; font-size: 24px; color: var(--pink); }
+    .product-desc { font-size: 14px; color: #555; flex: 1; }
+    .product-stock { font-size: 12px; color: var(--green); font-weight: 700; }
+
+    .btn {
+      font-family: 'Bungee', cursive;
+      font-size: 14px;
+      padding: 10px 20px;
+      border: 3px solid var(--black);
+      cursor: pointer;
+      box-shadow: 3px 3px 0 var(--black);
+      text-transform: uppercase;
+      transition: all 0.1s;
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+    }
+    .btn:hover { transform: translate(1px, 1px); box-shadow: 2px 2px 0 var(--black); }
+    .btn:active { transform: translate(3px, 3px); box-shadow: none; }
+
+    .btn-primary { background: var(--cyan); color: var(--black); }
+    .btn-success { background: var(--green); color: var(--black); }
+    .btn-danger { background: var(--red); color: #fff; }
+    .btn-yellow { background: var(--yellow); color: var(--black); }
+    .btn-pink { background: var(--pink); color: #fff; }
+    .btn-purple { background: var(--purple); color: #fff; }
+
+    .btn-small { font-size: 11px; padding: 6px 12px; }
+
+    /* ===== FILTERS ===== */
+    .filters {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .filter-btn {
+      font-family: 'Bungee', cursive;
+      font-size: 12px;
+      padding: 6px 14px;
+      border: 3px solid var(--black);
+      background: #fff;
+      cursor: pointer;
+      box-shadow: 2px 2px 0 var(--black);
+      transition: all 0.1s;
+      text-transform: uppercase;
+    }
+    .filter-btn.active { background: var(--black); color: #fff; }
+
+    .search-input {
+      font-family: 'Public Sans', sans-serif;
+      font-size: 14px;
+      padding: 8px 14px;
+      border: 3px solid var(--black);
+      box-shadow: 3px 3px 0 var(--black);
+      outline: none;
+      min-width: 200px;
+    }
+    .search-input:focus { box-shadow: 1px 1px 0 var(--black); transform: translate(2px, 2px); }
+
+    /* ===== PAGE TITLE ===== */
+    .page-title {
+      font-family: 'Bungee', cursive;
+      font-size: 36px;
+      margin-bottom: 24px;
+      text-shadow: 3px 3px 0 var(--yellow);
+    }
+
+    /* ===== AUTH FORMS ===== */
+    .auth-form {
+      max-width: 420px;
+      margin: 40px auto;
+      background: #fff;
+      border: 4px solid var(--black);
+      box-shadow: 8px 8px 0 var(--black);
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .form-group { display: flex; flex-direction: column; gap: 4px; }
+    .form-group label { font-weight: 900; text-transform: uppercase; font-size: 13px; }
+    .form-group input {
+      font-family: 'Public Sans', sans-serif;
+      font-size: 15px;
+      padding: 10px 14px;
+      border: 3px solid var(--black);
+      box-shadow: 3px 3px 0 var(--black);
+      outline: none;
+    }
+    .form-group input:focus { box-shadow: 1px 1px 0 var(--black); transform: translate(2px, 2px); }
+
+    .error-msg { color: var(--red); font-weight: 700; font-size: 13px; }
+    .success-msg { color: var(--green); font-weight: 700; font-size: 13px; }
+
+    /* ===== CART & ORDERS ===== */
+    .cart-list, .order-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .cart-item, .order-item {
+      background: #fff;
+      border: 4px solid var(--black);
+      box-shadow: 4px 4px 0 var(--black);
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .cart-item-emoji { font-size: 48px; }
+    .cart-item-info { flex: 1; min-width: 150px; }
+    .cart-item-name { font-family: 'Bungee', cursive; font-size: 16px; }
+    .cart-item-price { font-weight: 900; color: var(--pink); }
+
+    .qty-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .qty-btn {
+      width: 32px; height: 32px;
+      font-family: 'Bungee', cursive;
+      font-size: 16px;
+      border: 3px solid var(--black);
+      background: var(--yellow);
+      cursor: pointer;
+      box-shadow: 2px 2px 0 var(--black);
+      line-height: 1;
+    }
+
+    .cart-total, .order-total {
+      font-family: 'Bungee', cursive;
+      font-size: 24px;
+      text-align: right;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      font-family: 'Bungee', cursive;
+      font-size: 20px;
+      color: #999;
+    }
+
+    /* ===== PRODUCT DETAIL ===== */
+    .product-detail {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+    @media (max-width: 700px) { .product-detail { grid-template-columns: 1fr; } }
+
+    .detail-emoji { font-size: 128px; text-align: center; }
+    .detail-info { display: flex; flex-direction: column; gap: 16px; }
+    .detail-name { font-family: 'Bungee', cursive; font-size: 36px; }
+    .detail-category { font-weight: 900; color: var(--purple); text-transform: uppercase; }
+    .detail-price { font-family: 'Bungee', cursive; font-size: 36px; color: var(--pink); }
+    .detail-desc { font-size: 16px; line-height: 1.6; }
+    .detail-stock { font-weight: 700; }
+
+    .back-link {
+      font-family: 'Bungee', cursive;
+      font-size: 14px;
+      color: var(--black);
+      text-decoration: none;
+      margin-bottom: 16px;
+      display: inline-block;
+      cursor: pointer;
+    }
+
+    .hidden { display: none !important; }
+
+    /* ===== TOAST ===== */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--black);
+      color: #fff;
+      padding: 14px 24px;
+      border: 3px solid #fff;
+      font-weight: 700;
+      box-shadow: 4px 4px 0 var(--yellow);
+      z-index: 999;
+      max-width: 400px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="/">MEGA<span>MART</span></a>
+  <nav id="main-nav">
+    <a href="/products">Shop</a>
+    <a href="/cart">Cart <span class="cart-badge" id="cart-count">0</span></a>
+    <a href="/orders">Orders</a>
+    <span id="user-info"></span>
+  </nav>
+</header>
+
+<main id="app"></main>
+
+<div id="toast" class="hidden"></div>
+
+<script>
+// ========== APP STATE ==========
+const state = {
+  user: null,
+  cartCount: 0
+};
+
+// ========== ROUTER ==========
+const routes = {
+  '/': renderProducts,
+  '/products': renderProducts,
+  '/cart': renderCart,
+  '/login': renderLogin,
+  '/register': renderRegister,
+  '/orders': renderOrders,
+};
+
+function navigate(path, replace = false) {
+  if (replace) {
+    history.replaceState(null, '', path);
+  } else {
+    history.pushState(null, '', path);
+  }
+  route();
+}
+
+function route() {
+  const path = window.location.pathname;
+  const app = document.getElementById('app');
+
+  // Product detail route: /product/:id
+  if (path.startsWith('/product/')) {
+    const id = path.split('/')[2];
+    renderProductDetail(id);
+    return;
+  }
+
+  const handler = routes[path] || renderProducts;
+  handler();
+}
+
+window.addEventListener('popstate', route);
+
+// ========== API HELPERS ==========
+async function api(url, options = {}) {
+  const res = await fetch(url, {
+    headers: { 'Content-Type': 'application/json' },
+    ...options,
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Request failed');
+  return data;
+}
+
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.remove('hidden');
+  setTimeout(() => el.classList.add('hidden'), 2500);
+}
+
+// ========== INIT ==========
+async function init() {
+  try {
+    const data = await api('/api/auth/me');
+    state.user = data.user;
+    updateUserUI();
+    if (state.user) await fetchCartCount();
+  } catch (e) { /* not logged in */ }
+  route();
+}
+
+function updateUserUI() {
+  const info = document.getElementById('user-info');
+  if (state.user) {
+    info.innerHTML = `
+      <span>👋 ${escapeHTML(state.user.name)}</span>
+      <button class="btn btn-small btn-danger" onclick="logout()">Logout</button>
+    `;
+  } else {
+    info.innerHTML = `
+      <a href="/login" class="btn btn-small btn-primary">Login</a>
+      <a href="/register" class="btn btn-small btn-yellow">Register</a>
+    `;
+  }
+}
+
+function escapeHTML(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+async function fetchCartCount() {
+  try {
+    const items = await api('/api/cart');
+    state.cartCount = items.reduce((s, i) => s + i.quantity, 0);
+  } catch (e) { state.cartCount = 0; }
+  document.getElementById('cart-count').textContent = state.cartCount;
+}
+
+// ========== PRODUCT LISTING ==========
+async function renderProducts() {
+  const app = document.getElementById('app');
+  app.innerHTML = '<div style="text-align:center;padding:40px;">Loading...</div>';
+
+  let products, categories;
+  try {
+    [products, categories] = await Promise.all([
+      api('/api/products'),
+      api('/api/categories')
+    ]);
+  } catch (e) {
+    app.innerHTML = '<p>Error loading products.</p>';
+    return;
+  }
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const activeCat = urlParams.get('category') || '';
+  const searchQuery = urlParams.get('search') || '';
+
+  let html = `
+    <h1 class="page-title">🛍️ ALL PRODUCTS</h1>
+    <div class="filters">
+      <button class="filter-btn ${activeCat === '' ? 'active' : ''}" onclick="setFilter('')">All</button>
+  `;
+  for (const cat of categories) {
+    html += `<button class="filter-btn ${activeCat === cat ? 'active' : ''}" onclick="setFilter('${escapeHTML(cat)}')">${escapeHTML(cat)}</button>`;
+  }
+  html += `
+      <input class="search-input" type="text" placeholder="Search..." value="${escapeHTML(searchQuery)}" id="search-box">
+    </div>
+    <div class="product-grid">
+  `;
+
+  let filtered = products;
+  if (activeCat) filtered = filtered.filter(p => p.category === activeCat);
+  if (searchQuery) filtered = filtered.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
+
+  if (filtered.length === 0) {
+    html += '<div class="empty-state">No products found. 😕</div>';
+  } else {
+    for (const p of filtered) {
+      html += `
+        <div class="product-card" onclick="navigate('/product/${p.id}')">
+          <div class="product-emoji">${escapeHTML(p.image)}</div>
+          <div class="product-category">${escapeHTML(p.category)}</div>
+          <div class="product-name">${escapeHTML(p.name)}</div>
+          <div class="product-price">$${p.price.toFixed(2)}</div>
+          <div class="product-desc">${escapeHTML(p.description)}</div>
+          <div class="product-stock">${p.stock > 0 ? '✅ In Stock (' + p.stock + ')' : '❌ Out of stock'}</div>
+          <button class="btn btn-pink" onclick="event.stopPropagation(); addToCart(${p.id})" ${p.stock === 0 ? 'disabled' : ''}>
+            Add to Cart
+          </button>
+        </div>
+      `;
+    }
+  }
+
+  html += '</div>';
+  app.innerHTML = html;
+
+  document.getElementById('search-box').addEventListener('input', function() {
+    const val = this.value;
+    const params = new URLSearchParams(window.location.search);
+    if (val) params.set('search', val); else params.delete('search');
+    const qs = params.toString();
+    history.replaceState(null, '', '/products' + (qs ? '?' + qs : ''));
+    renderProducts();
+  });
+}
+
+function setFilter(cat) {
+  const params = new URLSearchParams(window.location.search);
+  if (cat) params.set('category', cat); else params.delete('category');
+  const qs = params.toString();
+  history.replaceState(null, '', '/products' + (qs ? '?' + qs : ''));
+  renderProducts();
+}
+
+// ========== PRODUCT DETAIL ==========
+async function renderProductDetail(id) {
+  const app = document.getElementById('app');
+  app.innerHTML = '<div style="text-align:center;padding:40px;">Loading...</div>';
+
+  try {
+    const p = await api(`/api/products/${id}`);
+    app.innerHTML = `
+      <a class="back-link" onclick="navigate('/products')">← Back to Shop</a>
+      <div class="product-detail">
+        <div class="detail-emoji">${escapeHTML(p.image)}</div>
+        <div class="detail-info">
+          <div class="detail-category">${escapeHTML(p.category)}</div>
+          <h1 class="detail-name">${escapeHTML(p.name)}</h1>
+          <div class="detail-price">$${p.price.toFixed(2)}</div>
+          <p class="detail-desc">${escapeHTML(p.description)}</p>
+          <div class="detail-stock">${p.stock > 0 ? '✅ In Stock (' + p.stock + ' available)' : '❌ Out of stock'}</div>
+          <button class="btn btn-pink" onclick="addToCart(${p.id})" ${p.stock === 0 ? 'disabled' : ''}>
+            🛒 Add to Cart
+          </button>
+        </div>
+      </div>
+    `;
+  } catch (e) {
+    app.innerHTML = '<p>Product not found.</p>';
+  }
+}
+
+// ========== CART ==========
+async function addToCart(productId) {
+  if (!state.user) {
+    toast('Please login first!');
+    navigate('/login');
+    return;
+  }
+  try {
+    await api('/api/cart', {
+      method: 'POST',
+      body: JSON.stringify({ productId, quantity: 1 })
+    });
+    toast('Added to cart! 🛒');
+    await fetchCartCount();
+  } catch (e) {
+    toast(e.message);
+  }
+}
+
+async function renderCart() {
+  const app = document.getElementById('app');
+  if (!state.user) {
+    app.innerHTML = `
+      <h1 class="page-title">🛒 YOUR CART</h1>
+      <div class="empty-state">Please <a href="/login" style="color:var(--pink);">login</a> to view your cart.</div>
+    `;
+    return;
+  }
+
+  app.innerHTML = '<div style="text-align:center;padding:40px;">Loading...</div>';
+
+  try {
+    const items = await api('/api/cart');
+    if (items.length === 0) {
+      app.innerHTML = `
+        <h1 class="page-title">🛒 YOUR CART</h1>
+        <div class="empty-state">Your cart is empty. <a href="/products" style="color:var(--pink);">Start shopping!</a></div>
+      `;
+      return;
+    }
+
+    let total = 0;
+    let html = '<h1 class="page-title">🛒 YOUR CART</h1><div class="cart-list">';
+    for (const item of items) {
+      const lineTotal = item.price * item.quantity;
+      total += lineTotal;
+      html += `
+        <div class="cart-item">
+          <div class="cart-item-emoji">${escapeHTML(item.image)}</div>
+          <div class="cart-item-info">
+            <div class="cart-item-name">${escapeHTML(item.name)}</div>
+            <div class="cart-item-price">$${item.price.toFixed(2)} each</div>
+          </div>
+          <div class="qty-controls">
+            <button class="qty-btn" onclick="updateCartQty(${item.id}, ${item.quantity - 1})">−</button>
+            <span style="font-weight:900;min-width:24px;text-align:center;">${item.quantity}</span>
+            <button class="qty-btn" onclick="updateCartQty(${item.id}, ${item.quantity + 1})">+</button>
+          </div>
+          <div style="font-weight:900;">$${lineTotal.toFixed(2)}</div>
+          <button class="btn btn-small btn-danger" onclick="removeCartItem(${item.id})">✕</button>
+        </div>
+      `;
+    }
+    html += `
+      </div>
+      <div class="cart-total" style="margin-top:20px;">Total: $${total.toFixed(2)}</div>
+      <div style="text-align:right;margin-top:16px;">
+        <button class="btn btn-success" onclick="placeOrder()">Place Order 🎉</button>
+      </div>
+    `;
+    app.innerHTML = html;
+  } catch (e) {
+    app.innerHTML = '<p>Error loading cart.</p>';
+  }
+}
+
+async function updateCartQty(id, qty) {
+  if (qty <= 0) {
+    await removeCartItem(id);
+    return;
+  }
+  try {
+    await api(`/api/cart/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify({ quantity: qty })
+    });
+    await fetchCartCount();
+    renderCart();
+  } catch (e) { toast(e.message); }
+}
+
+async function removeCartItem(id) {
+  try {
+    await api(`/api/cart/${id}`, { method: 'DELETE' });
+    toast('Item removed');
+    await fetchCartCount();
+    renderCart();
+  } catch (e) { toast(e.message); }
+}
+
+// ========== ORDERS ==========
+async function placeOrder() {
+  try {
+    const result = await api('/api/orders', { method: 'POST' });
+    toast(`Order #${result.orderId} placed! Total: $${result.total.toFixed(2)} 🎉`);
+    state.cartCount = 0;
+    document.getElementById('cart-count').textContent = '0';
+    renderOrders();
+  } catch (e) { toast(e.message); }
+}
+
+async function renderOrders() {
+  const app = document.getElementById('app');
+  if (!state.user) {
+    app.innerHTML = `
+      <h1 class="page-title">📦 YOUR ORDERS</h1>
+      <div class="empty-state">Please <a href="/login" style="color:var(--pink);">login</a> to view orders.</div>
+    `;
+    return;
+  }
+
+  app.innerHTML = '<div style="text-align:center;padding:40px;">Loading...</div>';
+
+  try {
+    const orders = await api('/api/orders');
+    if (orders.length === 0) {
+      app.innerHTML = `
+        <h1 class="page-title">📦 YOUR ORDERS</h1>
+        <div class="empty-state">No orders yet. <a href="/products" style="color:var(--pink);">Shop now!</a></div>
+      `;
+      return;
+    }
+
+    let html = '<h1 class="page-title">📦 YOUR ORDERS</h1><div class="order-list">';
+    for (const order of orders) {
+      html += `
+        <div class="order-item" style="flex-direction:column;align-items:stretch;">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+            <div>
+              <strong>Order #${order.id}</strong>
+              <span style="background:var(--green);padding:2px 8px;border:2px solid var(--black);font-size:12px;font-weight:900;margin-left:8px;">${order.status.toUpperCase()}</span>
+            </div>
+            <div style="font-family:'Bungee',cursive;font-size:18px;">$${order.total.toFixed(2)}</div>
+            <div style="font-size:12px;color:#888;">${new Date(order.created_at).toLocaleString()}</div>
+          </div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;">
+      `;
+      for (const item of order.items) {
+        html += `
+          <div style="text-align:center;border:2px solid #ddd;padding:8px;min-width:80px;">
+            <div style="font-size:32px;">${escapeHTML(item.image)}</div>
+            <div style="font-size:11px;font-weight:700;">${escapeHTML(item.name)}</div>
+            <div style="font-size:11px;">x${item.quantity} · $${item.price.toFixed(2)}</div>
+          </div>
+        `;
+      }
+      html += '</div></div>';
+    }
+    html += '</div>';
+    app.innerHTML = html;
+  } catch (e) {
+    app.innerHTML = '<p>Error loading orders.</p>';
+  }
+}
+
+// ========== AUTH ==========
+function renderLogin() {
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <form class="auth-form" onsubmit="handleLogin(event)">
+      <h1 class="page-title" style="margin-bottom:0;">🔑 LOGIN</h1>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" name="email" required placeholder="you@example.com">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" name="password" required placeholder="••••••">
+      </div>
+      <div id="login-error" class="error-msg hidden"></div>
+      <button type="submit" class="btn btn-primary">Login</button>
+      <p style="text-align:center;">Don't have an account? <a href="/register" onclick="event.preventDefault();navigate('/register')" style="color:var(--pink);font-weight:700;">Register</a></p>
+    </form>
+  `;
+}
+
+async function handleLogin(e) {
+  e.preventDefault();
+  const email = e.target.email.value;
+  const password = e.target.password.value;
+  const errEl = document.getElementById('login-error');
+  try {
+    const data = await api('/api/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ email, password })
+    });
+    state.user = { id: data.userId, name: data.name, email };
+    updateUserUI();
+    await fetchCartCount();
+    toast('Welcome back, ' + data.name + '! 👋');
+    navigate('/products');
+  } catch (err) {
+    errEl.textContent = err.message;
+    errEl.classList.remove('hidden');
+  }
+}
+
+function renderRegister() {
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <form class="auth-form" onsubmit="handleRegister(event)">
+      <h1 class="page-title" style="margin-bottom:0;">✨ REGISTER</h1>
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" name="name" required placeholder="Your name">
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" name="email" required placeholder="you@example.com">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" name="password" required placeholder="Min 6 characters" minlength="6">
+      </div>
+      <div id="register-error" class="error-msg hidden"></div>
+      <button type="submit" class="btn btn-yellow">Create Account</button>
+      <p style="text-align:center;">Already have an account? <a href="/login" onclick="event.preventDefault();navigate('/login')" style="color:var(--pink);font-weight:700;">Login</a></p>
+    </form>
+  `;
+}
+
+async function handleRegister(e) {
+  e.preventDefault();
+  const name = e.target.name.value;
+  const email = e.target.email.value;
+  const password = e.target.password.value;
+  const errEl = document.getElementById('register-error');
+  try {
+    const data = await api('/api/auth/register', {
+      method: 'POST',
+      body: JSON.stringify({ email, password, name })
+    });
+    state.user = { id: data.userId, name: data.name, email };
+    updateUserUI();
+    await fetchCartCount();
+    toast('Welcome to MegaMart, ' + data.name + '! 🎉');
+    navigate('/products');
+  } catch (err) {
+    errEl.textContent = err.message;
+    errEl.classList.remove('hidden');
+  }
+}
+
+async function logout() {
+  try {
+    await api('/api/auth/logout', { method: 'POST' });
+    state.user = null;
+    state.cartCount = 0;
+    document.getElementById('cart-count').textContent = '0';
+    updateUserUI();
+    toast('Logged out. See ya! 👋');
+    navigate('/products');
+  } catch (e) { /* ignore */ }
+}
+
+// ========== INTERCEPT NAV CLICKS ==========
+document.addEventListener('click', function(e) {
+  const link = e.target.closest('a');
+  if (!link) return;
+  const href = link.getAttribute('href');
+  if (!href || href.startsWith('http') || href.startsWith('#')) return;
+  e.preventDefault();
+  navigate(href);
+});
+
+// ========== START ==========
+init();
+</script>
+</body>
+</html>
